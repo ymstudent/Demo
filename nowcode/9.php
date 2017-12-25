@@ -41,3 +41,18 @@ function FindKthToTail($head, $k)
     }
     return $last;
 }
+
+/**
+ * 这里补充一道关于链表的题目：输入一个链表，从尾到头打印链表每个节点的值。
+ * 这里要求重尾到头打印出链表每个节点的"值"（值，划重点），所以我们可以先从头到尾遍历出链表每个节点的值，
+ * 并将其放入到一个数组中，最后反转数组输出就行了
+ */
+function printListFromTailToHead($head)
+{
+    $list = [];
+    while($head!=null){
+        $list[] = $head->val;
+        $head = $head->next;
+    }
+    return array_reverse($list);
+}
