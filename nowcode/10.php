@@ -38,7 +38,7 @@ function ReverseList2($pHead)
     while ($head != null) {
         //使用$next保存下一个节点，保证单链表不会因为失去head节点的原next节点而就此断裂
         $next = $head->next;
-        //进行链表的反转，将指向下一个节点的指针，指向前一个节点，这时出现链表的断裂
+        //进行链表的反转，将指向下一个节点的指针，指向前一个节点，这时可能出现链表的断裂
         //1->2->3->4->5
         //1<-2<-3 4->5
         $head->next = $pre;
@@ -55,22 +55,30 @@ function ReverseList2($pHead)
  */
 function ReverseList3($pHead)
 {
-    //1->2->3->4->5
-    $head = null;
-    //第二个节点
-    $next = $pHead->next;
-    while ($next->next != null) {
-        //利用$head保存第三个节点
-        $head = $next->next;
-        //将第三个节点换为第四个节点 1->2->3->4->5
-        $next->next = $head->next;
-        //第四个节点换为第二个节点
-        $head->next = $pHead->next;
-        //将第三个节点插入到第一个节点的后面
-        $pHead->next = $head;
+    //如果链表为空或者只有一个元素，直接返回
+    if($pHead == null || $pHead->next == null){
+        return $pHead;
     }
-    $head->next = $pHead;//相当于成环
-    $pHead = $next->next->next;//新head变为原head的next
-    $next->next->next = null;//断掉环
+    //1->2->3->4->5
+    $next = null;
+    //将原始链表的第二个节点保存在$p2中(此处为2)
+    $p2 = $pHead->next;
+    while ($p2->next != null) {
+        //利用$next保存$p2的下一个节点（第一次循环时为3，第二此循环时为4）
+        $next = $p2->next;
+        //将$p2指针指向本次链表的第四个节点（实际作用就是将p2后移一位）； 第一次：1->2->4->5 第二次：1->3->2->5
+        $p2->next = $next->next;
+        //将本次链表第三个节点的指针指向第二个节点 2->4->5(此时1，3的指针都指向2)  3->2->5(此时1和4都指向3)
+        $next->next = $pHead->next;
+        //将链表的第一个节点的指针直指向本次链表第三个节点 1->3->2->4->5  1->4->3->2->5
+        $pHead->next = $next;
+    }
+    //循环完成后，$p2已经处于链表的尾部
+    //将$p2的指针指向链表头部,相当于成环
+    $p2->next = $pHead;
+    //将新链表的头部设置为$p2的下下个节点，其实就是循环后链表的第二个节点
+    $pHead = $p2->next->next;
+    //将循环后链表的第一个节点的指针，指向null，链表断开，此时链表的反转完成
+    $p2->next->next = null;
     return $pHead;
 }
