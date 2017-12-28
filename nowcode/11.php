@@ -92,3 +92,23 @@ function Merge2($p1, $p2)
  * 这里为什么是返回$head而不是返回$p呢？其实此时的$p和$head其实都是{1,2,3,4,5,6}但是$p的头部指针一直在变动，
  * 到循环的最后变成了5，而$head的头部指针却一直指向1,所以他返回的是一个完整的链表{1,2,3,4,5,6}
  */
+
+/**
+ * 除了这种循环迭代的方式之外，还有一种递归的方法
+ */
+function Merge3($pHead1, $pHead2)
+{
+    if($pHead1 == NULL)
+        return $pHead2;
+    elseif($pHead2 == NULL)
+        return $pHead1;
+    $pMergeHead = NULL;
+    if($pHead1->val < $pHead2->val){
+        $pMergeHead = $pHead1;
+        $pMergeHead->next = Merge3($pHead1->next, $pHead2);
+    }else{
+        $pMergeHead = $pHead2;
+        $pMergeHead->next = Merge3($pHead1, $pHead2->next);
+    }
+    return $pMergeHead;
+}
