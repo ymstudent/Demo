@@ -30,8 +30,7 @@ function Merge($p1, $p2)
             $head->next = $p1;
             $p1 = $p1->next;
         }
-        //新链表后移
-        $head = $head->next;
+
     }
     //将指针指向链表剩下的部分
     if($p1 == null){
@@ -57,26 +56,31 @@ function Merge2($p1, $p2)
     if($p2 == null){
         return $p1;
     }
-    //去较小的作为合并链表的头部
+    //取较小的为合并链表的头部
     if($p1->val >= $p2->val){
         $head = $p2;
-        //p2后移动一位
+        //将p2的头部指针后移一位
         $p2 = $p2->next;
     }else{
         $head = $p1;
         $p1 = $p1->next;
     }
+    //php中对象的复制，其实就是引用操作，$head和$p其实指向的是同一个内存，所以对$p增加节点同时也会对$head产生影响
+	//此操作其实就是将$P的指针指向新链表的头部，此后随着新链表中节点的增加$p的指针也不断的向后移动，
+	//但是$head的指针却依然指向链表头部
     $p = $head;
     //循环比较大小
     while($p1 && $p2){
-        if($p1 >= $p2){
-            $p->next = $p2;
+        if($p1->val >= $p2->val){
+            //链表增加
+            $p->next = $p2; 
+            //表头指针后移
             $p2 = $p2->next;
         }else{
-            $p->next = $p1;
-            $p1 = $p1->next;
+            $p->next = $p1; //
+            $p1 = $p1->next;  //
         }
-        //指针后移
+        //表头指针后移
         $p = $p->next;
     }
     //将指针指向链表剩下的部分
