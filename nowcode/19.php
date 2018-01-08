@@ -10,18 +10,43 @@
  */
 function VerifySquenceOfBST($sequence)
 {
-    if(count($sequence) == 0) {
+    $flag = true;
+    if (count($sequence) == 0) {
         return false;
     }
-    $root = array_pop($sequence);
-    $left_arr = [];
-    $right_arr = [];
-    foreach ($sequence as $d) {
-        if($d > $root) {
-            $right_arr[] = $d;
-        }else{
-            $left_arr[] = $d;
+    if (count($sequence) == 1) {
+        return true;
+    } else {
+        $root_val = array_pop($sequence);
+        $less_max_idx = 0;
+        //通过遍历找出数组中左子树有多大
+        for ($i = 0; $i < count($sequence); $i++) {
+            if ($sequence[$i] < $root_val) {
+                $less_max_idx = $i;
+            }
         }
+        //截取出左、右子树
+        $left = array_slice($sequence,0, $less_max_idx);
+        $right = array_slice($sequence, $less_max_idx+1);
+        //验证左子树,必须都比根节点小
+        for ($i = 0; $i < count($left); $i++) {
+            if ($left[$i] > $root_val) {
+                return false;
+            }
+        }
+        //验证右子树，必须都比根节点小
+        for ($i = 0; $i < count($right); $i++) {
+            if ($right[$i] < $root_val) {
+                return false;
+            }
+        }
+        //递归左右子树
+        if ($flag && count($left) > 0) {
+            $flag &= VerifySquenceOfBST($left);
+        }
+        if ($flag && count($right) > 0) {
+            $flag &= VerifySquenceOfBST($right);
+        }
+        return $flag;
     }
-    VerifySquenceOfBST($right_arr);
 }
