@@ -5,51 +5,46 @@
  * Date: 2018/3/16
  * Time: 23:01
  * 使用php压缩zip文件和解压zip文件
+ * 需要使用PHP-ZIP库支持
  */
 ini_set('display_errors',1);
 /**
  * 压缩
  * @param array $files  文件数组
- * @param string $destination
- * @param bool $overwrite
+ * @param string $destination   目标zip文件
+ * @param bool $overwrite 是否覆盖
  * @return bool
  */
 function createZip($files = array(), $destination = '', $overwrite = false)
 {
-    //if the zip file already exists and overwrite is false, return false
+    //如果目标文件存在，且复写变量为false，直接返回false
     if (file_exists($destination) && !$overwrite) {
         return false;
     }
-    //vars
     $valid_files = array();
-    //if files were passed in...
     if (is_array($files)) {
-        //cycle through each file
+        //循环每个文件
         foreach ($files as $item) {
-            //make sure file exists
+            //确定文件存在
             if (file_exists($item)) {
                 $valid_files[] = $item;
             }
         }
     }
-    //if we have good files
     if (count($valid_files)) {
-        //create the archive
+        //创建 archive
         $zip = new ZipArchive();
         if ($zip->open($destination, $overwrite ? ZipArchive::OVERWRITE : ZipArchive::CREATE) != true) {
             return false;
         }
-        //add the files
+        //添加文件
         foreach ($valid_files as $file) {
             $zip->addFile($file, $file);
         }
-        //debug
-        //echo 'the zip archive contains '.$zip->numFiles.' files with a status of '.$zip->status;
-
-        //close the zip -- done!
+        //关闭archive
         $zip->close();
 
-        //chechk to make sure the file exists
+        //检查文件是否存在
         return file_exists($destination);
     } else {
         return false;
@@ -57,13 +52,15 @@ function createZip($files = array(), $destination = '', $overwrite = false)
 }
 
 //test
-$path = dirname(__DIR__).'/nowcode/';
-$files = array("{$path}1.php", "{$path}2.php", "{$path}3.php");
-createZip($files, "myZipFile.zip", true);
+//$path = dirname(__DIR__).'/nowcode/';
+//$files = array("{$path}1.php", "{$path}2.php", "{$path}3.php");
+//$rel = createZip($files, "myZipFile.zip", true);
 
 function upZip($location, $newLocation)
 {
+    //exec(): 执行一个外部程序，解压zip文件
     if(exec("unzip $location", $arr)){
+        //创建新目录
         mkdir($newLocation);
         for($i = 1; $i<count($arr);$i++){
             $file = trim(preg_replace("~inflating: ~", "", $arr[$i]));
@@ -75,3 +72,6 @@ function upZip($location, $newLocation)
         return false;
     }
 }
+//test
+$rel = upZip('myZipFile.zip', 'myzip/test');
+var_dump($rel);
