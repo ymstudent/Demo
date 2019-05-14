@@ -116,7 +116,7 @@ class phpMQTT {
             stream_set_blocking($this->socket, 0); //设置为非阻塞模式
             $i = 0;
             $buffer = "";
-            $buffer .= chr(0x00); $i++;
+            /*$buffer .= chr(0x00); $i++;
             $buffer .= chr(0x06); $i++;
             $buffer .= chr(0x4d); $i++;
             $buffer .= chr(0x51); $i++;
@@ -124,7 +124,15 @@ class phpMQTT {
             $buffer .= chr(0x73); $i++;
             $buffer .= chr(0x64); $i++;
             $buffer .= chr(0x70); $i++;
-            $buffer .= chr(0x03); $i++;
+            $buffer .= chr(0x03); $i++;*/
+            //将MQTT协议升级到3.1.1（4）
+            $buffer .= chr(0x00); $i++;
+            $buffer .= chr(0x04); $i++;
+            $buffer .= chr(0x4d); $i++;
+            $buffer .= chr(0x51); $i++;
+            $buffer .= chr(0x54); $i++;
+            $buffer .= chr(0x54); $i++;
+            $buffer .= chr(0x04); $i++;
             //No Will
             $var = 0;
             if($clean) $var+=2;
