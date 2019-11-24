@@ -1,0 +1,31 @@
+FROM sshd:dockerfile
+
+MAINTAINER ymfeb
+
+#安装nginx,设置nginx以非daemon方式启动
+RUN \
+    apt-get install -y nginx && \
+    rm -rf /var/lib/apt/list/* && \
+    echo "\ndaemon off;" >> /etc/nginx/nginx.conf && \
+    chown -R www-data:www-data /var/lib/nginx
+
+#更改系统时区
+RUN echo "Asia/Shanghai" > /etc/timezone && \
+    dpkg-reconfigure -f noninteractive tzdata
+
+#添加用户脚本并设置用户权限
+ADD run.sh /run.sh
+RUN chmod 755 /run.sh
+
+#定义可以被挂载的目录，分别为虚拟主机的挂载目录，证书目录，配置目录，和日志目录
+VOLUME ["/etc/nginx/sites-enabled", "/etc/nginx/certs", "/etc/nginx/conf.d", "/var/log/nginx"]
+
+#定义工作目录
+WORKDIR /etc/nginx
+
+#定义输出命令
+CMD ["/run.sh"]
+
+#定义输出端口
+EXPOSE 80
+EXPOSE 443
