@@ -6,7 +6,6 @@
  */
 
 /**
- *
  * @param $n //猴子数
  * @param $m //出局数
  * @return int
